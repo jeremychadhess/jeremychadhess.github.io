@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Coursera Data Science Course 9 Project</title>
+  <meta charset="utf-8">
+  <meta name="description" content="Coursera Data Science Course 9 Project">
+  <meta name="author" content="Jeremy Hess">
+  <meta name="generator" content="slidify" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/default.css" media="all" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/phone.css" 
+    media="only screen and (max-device-width: 480px)" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/slidify.css" >
+  <link rel="stylesheet" href="libraries/highlighters/highlight.js/css/tomorrow.css" />
+  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->  <link rel=stylesheet href="./assets/css/ribbons.css"></link>
+
+  
+  <!-- Grab CDN jQuery, fall back to local if offline -->
+  <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.min.js"></script>
+  <script>window.jQuery || document.write('<script src="libraries/widgets/quiz/js/jquery.js"><\/script>')</script> 
+  <script data-main="libraries/frameworks/io2012/js/slides" 
+    src="libraries/frameworks/io2012/js/require-1.0.8.min.js">
+  </script>
+  
+  
+
+</head>
+<body style="opacity: 0">
+  <slides class="layout-widescreen">
+    
+    <!-- LOGO SLIDE -->
+        <slide class="title-slide segue nobackground">
+  <hgroup class="auto-fadein">
+    <h1>Coursera Data Science Course 9 Project</h1>
+    <h2>Analyis of Random Forest Algorithm Tree Count</h2>
+    <p>Jeremy Hess<br/></p>
+  </hgroup>
+  <article></article>  
+</slide>
+    
+
+    <!-- SLIDES -->
+    <slide class="" id="slide-1" style="background:;">
+  <hgroup>
+    <h2>Project Description</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>This program uses the mtcars data set and a random forest prediction algorithm to predict whether the car is an automatic or manual transmission.  The following variables are provided to the algorithm for use:
+amFlag, mpg, cyl, disp, hp, drat, wt, qsec, vs, gear, carb.</p>
+
+<p>Just choose the number of trees to run using the slide bar and then press the Submit button.<br>
+This app will run generate the model and display 
+the test accuracy based on your choice.</p>
+
+<p>The data was extracted from the 1974 Motor Trend US magazine, and comprises fuel consumption and 10 aspects of automobile design and performance for 32 automobiles (1973-74 models).</p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>Code for Preparing the Data</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">library(e1071)
+library(UsingR)
+library(lattice)
+library(ggplot2)
+library(caret)
+library(randomForest)
+library(dplyr)
+
+data(&quot;mtcars&quot;)
+mtcarsAllData &lt;- mutate(mtcars,amFlag = ifelse(mtcars$am ==1,&#39;Y&#39;,&#39;N&#39;) )
+set.seed(4242)
+inTrain = createDataPartition(mtcarsAllData$amFlag,p=.9)[[1]]
+training = mtcarsAllData[ inTrain,]
+trainFieldList &lt;- c(&quot;amFlag&quot;,&quot;mpg&quot;,&quot;cyl&quot;,&quot;disp&quot;,&quot;hp&quot;,&quot;drat&quot;,&quot;wt&quot;,&quot;qsec&quot;,&quot;vs&quot;,&quot;gear&quot;,&quot;carb&quot;)
+train &lt;- training[,trainFieldList]
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>Build the Model and show the results</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">treeCount &lt;- 5
+rfModFit &lt;- train(amFlag ~ .,data = train, method = &#39;rf&#39;, ntree=treeCount, importance=TRUE,verbose=FALSE)
+</code></pre>
+
+<pre><code class="r">rfModFit$finalModel  
+</code></pre>
+
+<pre><code>## 
+## Call:
+##  randomForest(x = x, y = y, ntree = ..1, mtry = param$mtry, importance = TRUE,      verbose = FALSE) 
+##                Type of random forest: classification
+##                      Number of trees: 5
+## No. of variables tried at each split: 6
+## 
+##         OOB estimate of  error rate: 20.83%
+## Confusion matrix:
+##    N Y class.error
+## N 11 3   0.2142857
+## Y  2 8   0.2000000
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>Summary</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>You can see that the estimate of error rate is 20.83% with five trees.  This application allows you to increase or decrease the value of the treeCount variable and review the accuracy of the model.  What you will find is that the accuracy does not alway improve a the number of trees increases.  </p>
+
+<p>Note: This example was created to show the functionality of Shiny.  I may have not chosen the best model for this problem.  Also, I definitely did not complete the analysis.  I simply created an example showing how you can allow a user to modify the settings for a prediction algorithm to impact the accuracy and results.</p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+    <slide class="backdrop"></slide>
+  </slides>
+  <div class="pagination pagination-small" id='io2012-ptoc' style="display:none;">
+    <ul>
+      <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=1 title='Project Description'>
+         1
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=2 title='Code for Preparing the Data'>
+         2
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=3 title='Build the Model and show the results'>
+         3
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=4 title='Summary'>
+         4
+      </a>
+    </li>
+  </ul>
+  </div>  <!--[if IE]>
+    <script 
+      src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js">  
+    </script>
+    <script>CFInstall.check({mode: 'overlay'});</script>
+  <![endif]-->
+</body>
+  <!-- Load Javascripts for Widgets -->
+  
+  <!-- LOAD HIGHLIGHTER JS FILES -->
+  <script src="libraries/highlighters/highlight.js/highlight.pack.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  <!-- DONE LOADING HIGHLIGHTER JS FILES -->
+   
+  </html>
